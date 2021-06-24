@@ -71,7 +71,10 @@ protected:
 	// End of APawn interface
 
 private:
-	
+	void on_exit_game();
 
+	class UAIPerceptionStimuliSourceComponent* stimulus;
+
+	void setup_stimulus();
 };
 

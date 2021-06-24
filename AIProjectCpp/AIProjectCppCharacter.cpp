@@ -12,6 +12,10 @@
 
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/PlayerController.h"
+
+#include "Perception//AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense.h"
+#include "Perception/AISense_Sight.h"
 //////////////////////////////////////////////////////////////////////////
 // AAIProjectCppCharacter
 
@@ -48,6 +52,7 @@ AAIProjectCppCharacter::AAIProjectCppCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
+	setup_stimulus();
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -77,6 +82,14 @@ void AAIProjectCppCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AAIProjectCppCharacter::OnResetVR);
+}
+
+void AAIProjectCppCharacter::setup_stimulus()
+{
+	stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+	stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
+	stimulus->RegisterWithPerceptionSystem();
+	
 }
 
 
