@@ -26,6 +26,7 @@ ANPC_AIController::ANPC_AIController(FObjectInitializer const& object_initialize
 	}
 	behavior_tree_component = object_initializer.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorComp"));
 	blackboard = object_initializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
+
 	
 }
 

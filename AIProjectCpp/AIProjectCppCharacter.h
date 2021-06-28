@@ -74,7 +74,7 @@ private:
 	void on_exit_game();
 
 	class UAIPerceptionStimuliSourceComponent* stimulus;
-
+	UFUNCTION()
 	void setup_stimulus();
 };
 

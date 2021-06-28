@@ -3,6 +3,7 @@
 
 #include "NPC.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/PlayerController.h"
@@ -11,7 +12,15 @@ ANPC::ANPC()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	bUseControllerRotationYaw = false;
+	//GetCharacterMovement()->bUseControllerDesiredRotation = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	
+}
 
+APatrolPath* ANPC::get_patrol_path()
+{
+	return patrol_path;
 }
 
 // Called when the game starts or when spawned
@@ -25,8 +34,7 @@ void ANPC::BeginPlay()
 		material_instance->SetVectorParameterValue("BodyColor", FLinearColor(1.0f, 0.0f, 0, 1.0f));
 		GetMesh()->SetMaterial(0, material_instance);
 	}
-		
-	
+			
 }
 
 // Called every frame
