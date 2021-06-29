@@ -7,6 +7,7 @@
 #include "NPC_AIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "blackboard_keys.h"
+#include "cmath"
 
 UIncrementPathIndex::UIncrementPathIndex(FObjectInitializer const& ObjectInitializer)
 {
@@ -23,17 +24,19 @@ EBTNodeResult::Type UIncrementPathIndex::ExecuteTask(UBehaviorTreeComponent& Own
 	int const max_index = no_of_points - 1;
 	//get and set the black board index key
 	int index = controller->get_blackboard()->GetValueAsInt(bb_keys::patrol_path_index);
-	if(index >= max_index && Direction == EDirectionType::Forward)
+	if(bidirectional)
 	{
-		Direction = EDirectionType::Reverse;
-	}
-	else if (index == min_index && Direction == EDirectionType::Reverse)
-	{
-		Direction = EDirectionType::Forward;
-		
+		if(index >= max_index && Direction == EDirectionType::Forward)
+		{
+			Direction = EDirectionType::Reverse;
+		}
+		else if (index == min_index && Direction == EDirectionType::Reverse)
+		{
+			Direction = EDirectionType::Forward;
+		}		
 	}
 	controller->get_blackboard()->SetValueAsInt(bb_keys::patrol_path_index,
-		(Direction==EDirectionType::Forward ? ++index : --index) % no_of_points);
+		(Direction==EDirectionType::Forward ? std::abs(++index) : std::abs(--index)) % no_of_points);
 
 	//Finish with success
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

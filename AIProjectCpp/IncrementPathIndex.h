@@ -23,5 +23,7 @@ class AIPROJECTCPP_API UIncrementPathIndex : public UBTTask_BlackboardBase
 	};
 
 	EDirectionType Direction = EDirectionType::Forward;
-	
+	private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
+	bool bidirectional = true;
 };

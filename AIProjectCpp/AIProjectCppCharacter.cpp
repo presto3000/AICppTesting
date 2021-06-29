@@ -82,6 +82,9 @@ void AAIProjectCppCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 
 	// VR headset functionality
 	PlayerInputComponent->BindAction("ResetVR", IE_Pressed, this, &AAIProjectCppCharacter::OnResetVR);
+	// attack binding
+	PlayerInputComponent->BindAction("Attack", IE_Pressed, this, &AAIProjectCppCharacter::on_attack);
+	
 }
 
 void AAIProjectCppCharacter::setup_stimulus()
@@ -90,6 +93,14 @@ void AAIProjectCppCharacter::setup_stimulus()
 	stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
 	stimulus->RegisterWithPerceptionSystem();
 	
+}
+
+void AAIProjectCppCharacter::on_attack()
+{
+	if(Montage)
+	{
+		PlayAnimMontage(Montage);
+	}
 }
 
 

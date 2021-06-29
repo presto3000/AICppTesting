@@ -23,6 +23,21 @@ APatrolPath* ANPC::get_patrol_path()
 	return patrol_path;
 }
 
+int ANPC::melee_attack_Implementation()
+{
+	if(montage)
+	{
+		PlayAnimMontage(montage);
+		
+	}
+	return 0;
+}
+
+UAnimMontage* ANPC::get_montage() const
+{
+	return  montage;
+}
+
 // Called when the game starts or when spawned
 void ANPC::BeginPlay()
 {

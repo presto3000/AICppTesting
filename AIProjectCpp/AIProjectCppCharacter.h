@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Animation/AnimMontage.h"
+
 #include "AIProjectCppCharacter.generated.h"
 
 UCLASS(config=Game)
@@ -71,10 +73,15 @@ protected:
 	// End of APawn interface
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
+	UAnimMontage* Montage;
+	
 	void on_exit_game();
 
 	class UAIPerceptionStimuliSourceComponent* stimulus;
 	UFUNCTION()
 	void setup_stimulus();
+
+	void on_attack();
 };
 
