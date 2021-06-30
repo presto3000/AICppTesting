@@ -23,6 +23,14 @@ APatrolPath* ANPC::get_patrol_path()
 	return patrol_path;
 }
 
+void ANPC::melee_attack()
+{
+	if(montage)
+	{
+		PlayAnimMontage(montage);
+	}
+}
+/** 
 int ANPC::melee_attack_Implementation()
 {
 	if(montage)
@@ -32,6 +40,7 @@ int ANPC::melee_attack_Implementation()
 	}
 	return 0;
 }
+*/
 
 UAnimMontage* ANPC::get_montage() const
 {

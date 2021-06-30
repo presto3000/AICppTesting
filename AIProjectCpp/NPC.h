@@ -6,12 +6,12 @@
 
 #include "PatrolPath.h"
 #include "GameFramework/Character.h"
-#include "CombatInterface.h"
+//#include "CombatInterface.h"
 #include "Animation/AnimMontage.h"
 #include "NPC.generated.h"
 
 UCLASS()
-class AIPROJECTCPP_API ANPC : public ACharacter, public ICombatInterface
+class AIPROJECTCPP_API ANPC : public ACharacter//, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -34,8 +34,9 @@ public:
 	//UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Combat")
 	//int melee_attack();
 
-	int melee_attack_Implementation() override;
-
+	//int melee_attack_Implementation() override;
+	void melee_attack();
+	
 	UAnimMontage* get_montage() const;
 protected:
 	// Called when the game starts or when spawned
