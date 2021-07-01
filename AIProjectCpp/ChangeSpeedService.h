@@ -17,7 +17,7 @@ class AIPROJECTCPP_API UChangeSpeedService : public UBTService_BlackboardBase
 	UChangeSpeedService();
 	void OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 protected:
-	FString GetStaticDescription() const override;
+	FString GetStaticServiceDescription() const override;
 
 	private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))

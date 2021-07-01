@@ -22,7 +22,7 @@ void UChangeSpeedService::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, ui
 	
 }
 
-FString UChangeSpeedService::GetStaticDescription() const
+FString UChangeSpeedService::GetStaticServiceDescription() const
 {
 	return  FString("Change the NPCs speed");
 }
