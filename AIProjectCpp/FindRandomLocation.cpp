@@ -18,21 +18,26 @@ UFindRandomLocation::UFindRandomLocation(FObjectInitializer const& object_initil
 EBTNodeResult::Type UFindRandomLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	/** Get AI controller and its NPC*/
-	auto const cont = Cast <ANPC_AIController>(OwnerComp.GetAIOwner());
-	auto const npc = cont->GetPawn();
-	/** Obtain NPC location to use as an origin location*/
-	FVector const origin = npc ->GetActorLocation();
-	FNavLocation loc;
-
-	/**Get the navigation system and generate a random location on the NavMesh */
-	UNavigationSystemV1* const nav_sys = UNavigationSystemV1::GetCurrent(GetWorld());
-	if(nav_sys->GetRandomPointInNavigableRadius(origin, search_radius, loc, nullptr))
+	if(auto const cont = Cast <ANPC_AIController>(OwnerComp.GetAIOwner()))
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsVector(bb_keys::target_location, loc.Location);
+		if(auto const npc = cont->GetPawn())
+		{
+	/** Obtain NPC location to use as an origin location*/
+			FVector const origin = npc ->GetActorLocation();
+			FNavLocation loc;
+
+			/**Get the navigation system and generate a random location on the NavMesh */
+			if(UNavigationSystemV1* const nav_sys = UNavigationSystemV1::GetCurrent(GetWorld()))
+			{
+				if(nav_sys->GetRandomPointInNavigableRadius(origin, search_radius, loc, nullptr))
+				{
+					OwnerComp.GetBlackboardComponent()->SetValueAsVector(bb_keys::target_location, loc.Location);
+				}
+				/**Finish with success  */
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return EBTNodeResult::Succeeded;
+			}
+		}
 	}
-	/**Finish with success  */
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	
-	
-	return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Failed;
 }

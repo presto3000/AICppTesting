@@ -7,7 +7,6 @@
 #include "BehaviorTree/BehaviorTreeTypes.h"
 #include "NPC.h"
 #include "ChasePlayer.generated.h"
-
 /**
  * 
  */

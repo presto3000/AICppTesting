@@ -16,24 +16,29 @@ UFindPatrolPathPoint::UFindPatrolPathPoint(FObjectInitializer const& object_init
 
 EBTNodeResult::Type UFindPatrolPathPoint::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	// get the AI controller for the patrolling NPC
-	ANPC_AIController* const controller = Cast<ANPC_AIController>(OwnerComp.GetAIOwner());
 
+	// get the AI controller for the patrolling NPC
+	if(ANPC_AIController* const controller = Cast<ANPC_AIController>(OwnerComp.GetAIOwner()))
+
+	{
 	//get the current patrol path index from the blackboard
 	int const index = OwnerComp.GetBlackboardComponent()->GetValueAsInt(bb_keys::patrol_path_index);
 
 	// use the index to get the current patrol path from the NPC's reference to the patrol path
-	ANPC* const npc = Cast<ANPC>(controller->GetPawn());
-	FVector const point = npc->get_patrol_path()->get_patrol_point(index);
-	
-	// transform this point to a global position using its parent
-	FVector const global_point = npc->get_patrol_path()->GetActorTransform().TransformPosition(point);
+	if(ANPC* const npc = Cast<ANPC>(controller->GetPawn()))
+		{
+		FVector const point = npc->get_patrol_path()->get_patrol_point(index);
+		
+		// transform this point to a global position using its parent
+		FVector const global_point = npc->get_patrol_path()->GetActorTransform().TransformPosition(point);
 
-	//write the current global path point to the blackboard
-	OwnerComp.GetBlackboardComponent()->SetValueAsVector(bb_keys::patrol_path_vector,global_point);
+		//write the current global path point to the blackboard
+		OwnerComp.GetBlackboardComponent()->SetValueAsVector(bb_keys::patrol_path_vector,global_point);
 
-	//finish with success
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return EBTNodeResult::Succeeded;
-
+		//finish with success
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return EBTNodeResult::Succeeded;
+		}
+	}
+	return EBTNodeResult::Failed;
 }

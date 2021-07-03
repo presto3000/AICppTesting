@@ -2,17 +2,14 @@
 
 
 #include "NPC.h"
-
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Runtime/Engine/Classes/Engine/World.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/PlayerController.h"
-
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 #include "HealthBar.h"
-
 #include "Components/BoxComponent.h"
 #include "AIProjectCppCharacter.h"
 
@@ -37,13 +34,8 @@ ANPC::ANPC() :
 		if(widget_class.Succeeded())
 		{
 			widget_widgets->SetWidgetClass(widget_class.Class);
-
-
 		}
-
-
-	}
-	
+	}	
 }
 
 APatrolPath* ANPC::get_patrol_path()
@@ -92,12 +84,15 @@ void ANPC::set_health(float const new_health)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("You Win You GEnius!!!"));
 		GetWorld()->GetFirstPlayerController()->ConsoleCommand("quit");
-
 	}
 }
 
 UBehaviorTree* ANPC::GetBehaviorTree() const {
 	return BehaviorTree;
+}
+
+void ANPC::SetPatrolPath(APatrolPath* const Path) {
+	patrol_path = Path;
 }
 
 // Called when the game starts or when spawned
@@ -111,8 +106,6 @@ void ANPC::BeginPlay()
 		material_instance->SetVectorParameterValue("BodyColor", FLinearColor(1.0f, 0.0f, 0, 1.0f));
 		GetMesh()->SetMaterial(0, material_instance);
 	}
-
-
 }
 void ANPC::on_attack_overlap_begin(
 		UPrimitiveComponent* const overlapped_component,
@@ -126,16 +119,14 @@ void ANPC::on_attack_overlap_begin(
 				{
 					float const new_health = player->get_health() - player->get_max_health() * 0.07f;
 					player->set_health(new_health);
-				}
-	
+				}	
 		}
 void ANPC::on_attack_overlap_end(
 		UPrimitiveComponent* const overlapped_component,
 		AActor* const other_actor,
 		UPrimitiveComponent* other_component,
 		int const other_body_index)
-		{
-	
+		{	
 		}
 			
 

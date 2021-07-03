@@ -46,12 +46,11 @@ public:
 	float get_max_health() const;
 	void set_health(float const new_health);
 
-
 	void Tick(float const delta_time) override;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta =  (AllowPrivateAccess = "true"))
 	//class UBoxComponent* right_fist_collision_box;
-
+/////////////////////////////////////////////////////////////////////////////
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -81,11 +80,10 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
-protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	// End of APawn interface
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 private:
 
 	// User Widget 
@@ -93,16 +91,12 @@ private:
 	float const max_health = 100.0f;
 	float health;
 
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* distraction_sound;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* Montage;
 	
-
-
-
 	void on_exit_game();
 
 	class UAIPerceptionStimuliSourceComponent* stimulus;
@@ -128,7 +122,6 @@ private:
 		AActor* const other_actor,
 		UPrimitiveComponent* other_component,
 		int const other_body_index);
-
 	
 };
 

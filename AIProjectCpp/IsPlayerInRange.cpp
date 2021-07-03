@@ -22,15 +22,23 @@ void UIsPlayerInRange::OnBecomeRelevant(UBehaviorTreeComponent& OwnerComp, uint8
 
 	// get NPC
 
-	ANPC_AIController* const cont = Cast<ANPC_AIController>(OwnerComp.GetAIOwner());
-	ANPC* const npc = Cast<ANPC>(cont->GetPawn());
+	if(ANPC_AIController* const cont = Cast<ANPC_AIController>(OwnerComp.GetAIOwner()))
+	{
+		if(ANPC* const NPC = Cast<ANPC>(cont->GetPawn()))
+		{
 
 	//get player character
-	ACharacter* const player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
+	if(ACharacter* const player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0))
+	{
 
-	//write true or false depending on whether the player is within melee_range
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), npc->GetDistanceTo(player)<=melee_range);
-	
-	
+				float const Distance = NPC->GetDistanceTo(player);
+
+				UE_LOG(LogTemp, Warning, TEXT("Distance: %d"), Distance);
+
+				//write true or false depending on whether the player is within melee_range
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(GetSelectedBlackboardKey(), NPC->GetDistanceTo(player)<=melee_range);
+			}	
+		}
+	}
 	
 }

@@ -17,9 +17,10 @@ public:
 
 	FVector get_patrol_point (int const index) const;
 	int num() const;
+	void AddPatrolPoint(FVector const &NewPoint);
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (MakeEditWidget = "true", AllowPrivateAcess = "true"))
 	TArray<FVector>patrol_points;
 	
-
 };

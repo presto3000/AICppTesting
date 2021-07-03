@@ -16,6 +16,5 @@ class AIPROJECTCPP_API UStopInvestigating : public UBTTask_BlackboardBase
 	public:
 	UStopInvestigating(FObjectInitializer const & ObjectInitializer);
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
-	
-	
+		
 };

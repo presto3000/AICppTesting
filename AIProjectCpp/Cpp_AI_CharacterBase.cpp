@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Cpp_AI_CharacterBase.h"
 #include "Components/BoxComponent.h"
 
@@ -18,7 +17,6 @@ ACpp_AI_CharacterBase::ACpp_AI_CharacterBase() :
 	}
 
 }
-
 // Called when the game starts or when spawned
 void ACpp_AI_CharacterBase::BeginPlay()
 {

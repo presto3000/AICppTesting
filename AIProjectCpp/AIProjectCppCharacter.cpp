@@ -8,11 +8,8 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
-
-
 #include "Materials/MaterialInstanceDynamic.h"
 #include "GameFramework/PlayerController.h"
-
 #include "Perception//AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense.h"
 #include "Perception/AISense_Sight.h"
@@ -20,16 +17,13 @@
 #include "ai_tags.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
-
 #include "Components/WidgetComponent.h"
 #include "UObject/ConstructorHelpers.h"
 #include "HealthBar.h"
-
 #include "Runtime/Engine/Classes/Components/BoxComponent.h"
 #include "NPC.h"
 //////////////////////////////////////////////////////////////////////////
 // AAIProjectCppCharacter
-
 AAIProjectCppCharacter::AAIProjectCppCharacter() : 
 widget_widgets(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
 health(max_health)
@@ -41,33 +35,27 @@ health(max_health)
 	// set our turn rates for input
 	BaseTurnRate = 45.f;
 	BaseLookUpRate = 45.f;
-
 	// Don't rotate when the controller rotates. Let that just affect the camera.
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
 	bUseControllerRotationRoll = false;
-
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
 	GetCharacterMovement()->JumpZVelocity = 100.f;
 	GetCharacterMovement()->AirControl = 0.2f;
-
 	// Create a camera boom (pulls in towards the player if there is a collision)
 	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
 	CameraBoom->SetupAttachment(RootComponent);
 	CameraBoom->TargetArmLength = 300.0f; // The camera follows at this distance behind the character	
 	CameraBoom->bUsePawnControlRotation = true; // Rotate the arm based on the controller
-
 	// Create a follow camera
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
-
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 	setup_stimulus();
-
 	if(widget_widgets)
 	{
 		widget_widgets->SetupAttachment(RootComponent);
@@ -84,17 +72,10 @@ health(max_health)
 		FVector const extent(5.0f, 5.0f, 5.0f);
 		right_fist_collision_box->SetBoxExtent(extent, false);
 		right_fist_collision_box->SetCollisionProfileName("NoCollision");
-
 	}
-
-
 }
-
-
-
 //////////////////////////////////////////////////////////////////////////
 // Input
-
 void AAIProjectCppCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
 	// Set up gameplay key bindings
@@ -130,7 +111,6 @@ void AAIProjectCppCharacter::setup_stimulus()
 	stimulus = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("stimulus"));
 	stimulus->RegisterForSense(TSubclassOf<UAISense_Sight>());
 	stimulus->RegisterWithPerceptionSystem();
-	
 }
 
 void AAIProjectCppCharacter::on_attack()
@@ -157,8 +137,6 @@ void AAIProjectCppCharacter::on_attack_overlap_end(
 		AActor* const other_actor,
 		UPrimitiveComponent* other_component,
 		int const other_body_index) {
-	
-
 }
 
 void AAIProjectCppCharacter::on_attack_overlap_begin(
@@ -172,12 +150,8 @@ void AAIProjectCppCharacter::on_attack_overlap_begin(
 	{
 		float const new_health = npc->get_health() - npc->get_max_health() * 0.1f;
 		npc->set_health(new_health);
-	}
-	
-	
+	}	
 }
-
-
 void AAIProjectCppCharacter::BeginPlay()
 {
 	Super::BeginPlay();
@@ -190,8 +164,7 @@ void AAIProjectCppCharacter::BeginPlay()
 	if(material_instance)
 	{
 		material_instance->SetVectorParameterValue("BodyColor", FLinearColor(0.0f, 1.0f, 0, 1.0f));
-		GetMesh()->SetMaterial(0, material_instance);
-	
+		GetMesh()->SetMaterial(0, material_instance);	
 	}
 	
 	// Attach delegates to the collision box
@@ -199,11 +172,7 @@ void AAIProjectCppCharacter::BeginPlay()
 	{
 		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &AAIProjectCppCharacter::on_attack_overlap_begin);
 		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &AAIProjectCppCharacter::on_attack_overlap_end);
-
 	}
-	
-		
-	
 	//Attach socket to a hand
 	if(right_fist_collision_box)
 	{
@@ -212,14 +181,9 @@ void AAIProjectCppCharacter::BeginPlay()
 		EAttachmentRule::SnapToTarget, 
 		EAttachmentRule::KeepWorld, false);
 		right_fist_collision_box->AttachToComponent(GetMesh(), rules, "hand_r_socket");
-		 right_fist_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
-
+		right_fist_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
 	}
-	
-
-	
 }
-
 void AAIProjectCppCharacter::OnResetVR()
 {
 	// If AIProjectCpp is added to a project via 'Add Feature' in the Unreal Editor the dependency on HeadMountedDisplay in AIProjectCpp.Build.cs is not automatically propagated

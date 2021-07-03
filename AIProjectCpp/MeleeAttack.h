@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "NPC.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "MeleeAttack.generated.h"
