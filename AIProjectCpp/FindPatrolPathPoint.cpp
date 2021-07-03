@@ -20,7 +20,7 @@ EBTNodeResult::Type UFindPatrolPathPoint::ExecuteTask(UBehaviorTreeComponent& Ow
 	ANPC_AIController* const controller = Cast<ANPC_AIController>(OwnerComp.GetAIOwner());
 
 	//get the current patrol path index from the blackboard
-	int const index = controller->get_blackboard()->GetValueAsInt(bb_keys::patrol_path_index);
+	int const index = OwnerComp.GetBlackboardComponent()->GetValueAsInt(bb_keys::patrol_path_index);
 
 	// use the index to get the current patrol path from the NPC's reference to the patrol path
 	ANPC* const npc = Cast<ANPC>(controller->GetPawn());
@@ -30,7 +30,7 @@ EBTNodeResult::Type UFindPatrolPathPoint::ExecuteTask(UBehaviorTreeComponent& Ow
 	FVector const global_point = npc->get_patrol_path()->GetActorTransform().TransformPosition(point);
 
 	//write the current global path point to the blackboard
-	controller->get_blackboard()->SetValueAsVector(bb_keys::patrol_path_vector,global_point);
+	OwnerComp.GetBlackboardComponent()->SetValueAsVector(bb_keys::patrol_path_vector,global_point);
 
 	//finish with success
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

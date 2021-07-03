@@ -17,7 +17,7 @@ EBTNodeResult::Type UStopInvestigating::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	//get the NPC controller and write false to the blackboard key "IsInvestigating"
 	auto const cont = Cast <ANPC_AIController>(OwnerComp.GetAIOwner());
-		cont->get_blackboard()->SetValueAsBool(bb_keys::is_investigating, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(bb_keys::is_investigating, false);
 
 	//finish with success
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

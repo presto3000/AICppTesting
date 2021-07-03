@@ -16,7 +16,10 @@ public class AIProjectCpp : ModuleRules
 				"HeadMountedDisplay",
 				"AIModule",
 				"GameplayTasks",
-				"NavigationSystem"
+				"NavigationSystem",
+				"UMG", // user interface
+				"Slate",// user interface
+				"SlateCore"// user interface
 			});
 	}
 }

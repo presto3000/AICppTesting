@@ -3,20 +3,22 @@
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "UObject/ConstructorHelpers.h"
-#include "AIProjectCppCharacter.h"
+
+
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
-#include "Perception/AIPerceptionStimuliSourceComponent.h"
+
 #include "Perception/AIPerceptionComponent.h"
 #include "blackboard_keys.h"
 #include "ai_tags.h"
-#include "GameFramework/Character.h"
+#include "NPC.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 
+
 ANPC_AIController::ANPC_AIController(FObjectInitializer const& object_initializer)
 {
+	/** 
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> obj(TEXT("BehaviorTree'/Game/AI/NPC_BT.NPC_BT'"));
 	if (obj.Succeeded())
 	{
@@ -24,30 +26,52 @@ ANPC_AIController::ANPC_AIController(FObjectInitializer const& object_initialize
 	}
 	behavior_tree_component = object_initializer.CreateDefaultSubobject<UBehaviorTreeComponent>(this, TEXT("BehaviorComp"));
 	blackboard = object_initializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
+	*/
 	setup_perception_system();
 }
 
 void ANPC_AIController::BeginPlay()
 {
 	Super::BeginPlay();
-	RunBehaviorTree(btree);
-	behavior_tree_component->StartTree(*btree);
+	
+	if(auto const NPC = Cast <ANPC> (GetPawn()))
+	{
+	if(auto const Tree = NPC->GetBehaviorTree())
+		{
+			UseBlackboard (Tree->BlackboardAsset, BlackboardComponent);
+
+
+		}
+	}
+	
+//RunBehaviorTree(btree);
+//behavior_tree_component->StartTree(*btree);
 }
 
 void ANPC_AIController::OnPossess(APawn* const pawn)
 {
 	Super::OnPossess(pawn);
+	if (auto const NPC = Cast <ANPC>(pawn))
+	{
+		if(UBehaviorTree* const Tree = NPC->GetBehaviorTree())
+		{
+			RunBehaviorTree(Tree);
+		}
+
+	}
+	/** 
 	if (blackboard)
 	{
 		blackboard->InitializeBlackboard(*btree->BlackboardAsset);
 	}
+	*/
 }
-
+/** 
 UBlackboardComponent* ANPC_AIController::get_blackboard() const
 {
 	return blackboard;
 }
-
+*/
 void ANPC_AIController::on_updated(TArray<AActor*> const& updated_actors)
 {
 	for (size_t x = 0; x < updated_actors.Num(); ++x)
@@ -57,14 +81,14 @@ void ANPC_AIController::on_updated(TArray<AActor*> const& updated_actors)
 		for (size_t k = 0; k < info.LastSensedStimuli.Num(); ++k)
 		{
 			FAIStimulus const stim = info.LastSensedStimuli[k];
-			if (stim.Tag == tags::nois_tag)
+			if (BlackboardComponent && stim.Tag == tags::nois_tag)
 			{
-				get_blackboard()->SetValueAsBool(bb_keys::is_investigating, stim.WasSuccessfullySensed());
-				get_blackboard()->SetValueAsVector(bb_keys::target_location, stim.StimulusLocation);
+				BlackboardComponent->SetValueAsBool(bb_keys::is_investigating, stim.WasSuccessfullySensed());
+				BlackboardComponent->SetValueAsVector(bb_keys::target_location, stim.StimulusLocation);
 			}
-			else if (stim.Type.Name == "Default__AISense_Sight")
+			else if (BlackboardComponent && stim.Type.Name == "Default__AISense_Sight")
 			{
-				get_blackboard()->SetValueAsBool(bb_keys::can_see_player, stim.WasSuccessfullySensed());
+				BlackboardComponent->SetValueAsBool(bb_keys::can_see_player, stim.WasSuccessfullySensed());
 			}
 		}
 	}

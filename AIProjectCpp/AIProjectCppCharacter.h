@@ -6,10 +6,11 @@
 #include "GameFramework/Character.h"
 #include "Animation/AnimMontage.h"
 #include "Sound/SoundBase.h"
+#include "Cpp_AI_CharacterBase.h"
 #include "AIProjectCppCharacter.generated.h"
 
 UCLASS(config=Game)
-class AAIProjectCppCharacter : public ACharacter
+class AAIProjectCppCharacter : public ACpp_AI_CharacterBase
 {
 	GENERATED_BODY()
 
@@ -38,6 +39,19 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+
+	//getters and setters for health etc.
+	float get_health() const;
+	float get_max_health() const;
+	void set_health(float const new_health);
+
+
+	void Tick(float const delta_time) override;
+
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Collision", meta =  (AllowPrivateAccess = "true"))
+	//class UBoxComponent* right_fist_collision_box;
+
 protected:
 
 	/** Resets HMD orientation in VR. */
@@ -73,12 +87,22 @@ protected:
 	// End of APawn interface
 
 private:
+
+	// User Widget 
+	class UWidgetComponent* widget_widgets;
+	float const max_health = 100.0f;
+	float health;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound", meta = (AllowPrivateAccess = "true"))
 	USoundBase* distraction_sound;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animation", meta = (AllowPrivateAccess = "true"))
 	UAnimMontage* Montage;
 	
+
+
+
 	void on_exit_game();
 
 	class UAIPerceptionStimuliSourceComponent* stimulus;
@@ -86,8 +110,25 @@ private:
 	void setup_stimulus();
 
 	void on_attack();
-
+	
 	void on_distract();
+
+		UFUNCTION()
+	void on_attack_overlap_begin(
+		UPrimitiveComponent* const overlapped_component,
+		AActor* const other_actor,
+		UPrimitiveComponent* other_component,
+		int const other_body_index,
+		bool const from_sweep,
+		FHitResult const& sweep_result);
+
+	UFUNCTION()
+	void on_attack_overlap_end(
+		UPrimitiveComponent* const overlapped_component,
+		AActor* const other_actor,
+		UPrimitiveComponent* other_component,
+		int const other_body_index);
+
 	
 };
 

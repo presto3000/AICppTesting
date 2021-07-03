@@ -21,10 +21,19 @@
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
 
+#include "Components/WidgetComponent.h"
+#include "UObject/ConstructorHelpers.h"
+#include "HealthBar.h"
+
+#include "Runtime/Engine/Classes/Components/BoxComponent.h"
+#include "NPC.h"
 //////////////////////////////////////////////////////////////////////////
 // AAIProjectCppCharacter
 
-AAIProjectCppCharacter::AAIProjectCppCharacter()
+AAIProjectCppCharacter::AAIProjectCppCharacter() : 
+widget_widgets(CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))),
+health(max_health)
+//right_fist_collision_box(CreateDefaultSubobject<UBoxComponent>(TEXT("RightFistCollisionBox")))
 {
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -41,7 +50,7 @@ AAIProjectCppCharacter::AAIProjectCppCharacter()
 	// Configure character movement
 	GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...	
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 540.0f, 0.0f); // ...at this rotation rate
-	GetCharacterMovement()->JumpZVelocity = 600.f;
+	GetCharacterMovement()->JumpZVelocity = 100.f;
 	GetCharacterMovement()->AirControl = 0.2f;
 
 	// Create a camera boom (pulls in towards the player if there is a collision)
@@ -58,7 +67,30 @@ AAIProjectCppCharacter::AAIProjectCppCharacter()
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 	setup_stimulus();
+
+	if(widget_widgets)
+	{
+		widget_widgets->SetupAttachment(RootComponent);
+		widget_widgets->SetWidgetSpace(EWidgetSpace::Screen);
+		widget_widgets->SetRelativeLocation(FVector(0.0f, 0.0f, 85.0f));
+		static ConstructorHelpers::FClassFinder<UUserWidget> widget_class(TEXT("/Game/UI/HealthBar_BP"));
+		if(widget_class.Succeeded())
+		{
+			widget_widgets->SetWidgetClass(widget_class.Class);
+		}
+	}
+	if (right_fist_collision_box)
+	{
+		FVector const extent(5.0f, 5.0f, 5.0f);
+		right_fist_collision_box->SetBoxExtent(extent, false);
+		right_fist_collision_box->SetCollisionProfileName("NoCollision");
+
+	}
+
+
 }
+
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
@@ -120,6 +152,31 @@ void AAIProjectCppCharacter::on_distract()
 	
 }
 
+void AAIProjectCppCharacter::on_attack_overlap_end(
+		UPrimitiveComponent* const overlapped_component,
+		AActor* const other_actor,
+		UPrimitiveComponent* other_component,
+		int const other_body_index) {
+	
+
+}
+
+void AAIProjectCppCharacter::on_attack_overlap_begin(
+		UPrimitiveComponent* const overlapped_component,
+		AActor* const other_actor,
+		UPrimitiveComponent* other_component,
+		int const other_body_index,
+		bool const from_sweep,
+		FHitResult const& sweep_result) {
+	if(ANPC* const npc = Cast <ANPC>(other_actor))
+	{
+		float const new_health = npc->get_health() - npc->get_max_health() * 0.1f;
+		npc->set_health(new_health);
+	}
+	
+	
+}
+
 
 void AAIProjectCppCharacter::BeginPlay()
 {
@@ -134,6 +191,29 @@ void AAIProjectCppCharacter::BeginPlay()
 	{
 		material_instance->SetVectorParameterValue("BodyColor", FLinearColor(0.0f, 1.0f, 0, 1.0f));
 		GetMesh()->SetMaterial(0, material_instance);
+	
+	}
+	
+	// Attach delegates to the collision box
+	if(right_fist_collision_box)
+	{
+		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &AAIProjectCppCharacter::on_attack_overlap_begin);
+		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &AAIProjectCppCharacter::on_attack_overlap_end);
+
+	}
+	
+		
+	
+	//Attach socket to a hand
+	if(right_fist_collision_box)
+	{
+	FAttachmentTransformRules const rules(
+		EAttachmentRule::SnapToTarget, 
+		EAttachmentRule::SnapToTarget, 
+		EAttachmentRule::KeepWorld, false);
+		right_fist_collision_box->AttachToComponent(GetMesh(), rules, "hand_r_socket");
+		 right_fist_collision_box->SetRelativeLocation(FVector(-7.0f, 0.0f, 0.0f));
+
 	}
 	
 
@@ -200,4 +280,37 @@ void AAIProjectCppCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+float AAIProjectCppCharacter::get_health() const 
+{
+	return health;
+}
+float AAIProjectCppCharacter::get_max_health() const 
+{
+	return max_health;
+
+}
+void AAIProjectCppCharacter::set_health(float const new_health)
+{
+	health = new_health;
+	if(health <= 0)
+	{
+		UE_LOG(LogTemp, Error, TEXT("You lose nooby!!!"));
+		auto const controller = UGameplayStatics::GetPlayerController(this, 0);
+		controller->SetCinematicMode(true, false, false, true, true);
+		GetMesh()->SetSimulatePhysics(true);
+		GetMovementComponent()->MovementState.bCanJump = false;
+		GetWorld()->GetFirstPlayerController()->ConsoleCommand("quit");
+	}
+}
+void AAIProjectCppCharacter::Tick(float const delta_time) 
+{
+	Super::Tick(delta_time);
+	auto const uw = Cast<UHealthBar>(widget_widgets->GetUserWidgetObject());
+	if (uw)
+	{
+		uw->set_bar_value_percent(health/max_health);
+
+	}	
 }
