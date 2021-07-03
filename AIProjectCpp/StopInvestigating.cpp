@@ -6,8 +6,6 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "blackboard_keys.h"
 
-
-
 UStopInvestigating::UStopInvestigating(FObjectInitializer const& ObjectInitializer)
 {
 	NodeName = TEXT("Stop Investigating");
@@ -16,14 +14,11 @@ UStopInvestigating::UStopInvestigating(FObjectInitializer const& ObjectInitializ
 EBTNodeResult::Type UStopInvestigating::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	//get the NPC controller and write false to the blackboard key "IsInvestigating"
-	auto const cont = Cast <ANPC_AIController>(OwnerComp.GetAIOwner());
+	//auto const cont = Cast <ANPC_AIController>(OwnerComp.GetAIOwner());
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(bb_keys::is_investigating, false);
 
 	//finish with success
 	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	return EBTNodeResult::Succeeded;
-	
-	
-
-	
+		
 }

@@ -16,7 +16,6 @@ UCLASS()
 class AIPROJECTCPP_API ANPC : public ACpp_AI_CharacterBase//, public ICombatInterface
 {
 	GENERATED_BODY()
-
 public:
 	// Sets default values for this character's properties
 	ANPC();
@@ -27,7 +26,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
 	APatrolPath* patrol_path;
 
@@ -46,11 +44,13 @@ public:
 	void set_health(float const new_health);
 	UBehaviorTree* GetBehaviorTree() const;
 
+	void SetPatrolPath(APatrolPath* const Path);
 
+////////////////////////////////////////////////////////////////////////////
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+///////////////////////////////////////////////////////////////////////////
 private:
 	class UWidgetComponent* widget_widgets;
 	float const max_health = 100.0f;
@@ -62,8 +62,6 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 	UBehaviorTree* BehaviorTree;
 	
-
-
 	UFUNCTION()
 	void on_attack_overlap_begin(
 		UPrimitiveComponent* const overlapped_component,
@@ -80,5 +78,4 @@ private:
 		UPrimitiveComponent* other_component,
 		int const other_body_index);
 	
-
 };

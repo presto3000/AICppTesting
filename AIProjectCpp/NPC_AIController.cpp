@@ -7,14 +7,12 @@
 
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AISenseConfig_Hearing.h"
-
 #include "Perception/AIPerceptionComponent.h"
 #include "blackboard_keys.h"
 #include "ai_tags.h"
 #include "NPC.h"
 #include "Runtime/Engine/Classes/Kismet/GameplayStatics.h"
 #include "Runtime/Engine/Classes/Engine/Engine.h"
-
 
 ANPC_AIController::ANPC_AIController(FObjectInitializer const& object_initializer)
 {
@@ -28,44 +26,30 @@ ANPC_AIController::ANPC_AIController(FObjectInitializer const& object_initialize
 	blackboard = object_initializer.CreateDefaultSubobject<UBlackboardComponent>(this, TEXT("BlackboardComp"));
 	*/
 	setup_perception_system();
+
 }
-
-void ANPC_AIController::BeginPlay()
-{
-	Super::BeginPlay();
-	
-	if(auto const NPC = Cast <ANPC> (GetPawn()))
-	{
-	if(auto const Tree = NPC->GetBehaviorTree())
-		{
-			UseBlackboard (Tree->BlackboardAsset, BlackboardComponent);
-
-
-		}
-	}
-	
 //RunBehaviorTree(btree);
 //behavior_tree_component->StartTree(*btree);
-}
 
 void ANPC_AIController::OnPossess(APawn* const pawn)
 {
 	Super::OnPossess(pawn);
-	if (auto const NPC = Cast <ANPC>(pawn))
+	if (auto const NPC = Cast<ANPC>(pawn))
 	{
-		if(UBehaviorTree* const Tree = NPC->GetBehaviorTree())
+		if (UBehaviorTree* const Tree = NPC->GetBehaviorTree())
 		{
+			UseBlackboard(Tree->BlackboardAsset, BlackboardComponent);
 			RunBehaviorTree(Tree);
 		}
-
 	}
+}
 	/** 
 	if (blackboard)
 	{
 		blackboard->InitializeBlackboard(*btree->BlackboardAsset);
 	}
 	*/
-}
+
 /** 
 UBlackboardComponent* ANPC_AIController::get_blackboard() const
 {

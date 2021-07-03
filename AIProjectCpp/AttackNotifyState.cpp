@@ -6,9 +6,6 @@
 #include "Components/SkeletalMeshComponent.h"
 #include "Cpp_AI_CharacterBase.h"
 
-
-
-
 void UAttackNotifyState::NotifyBegin(USkeletalMeshComponent* const mesh, UAnimSequenceBase* const animation, float const total_duration)  
 {
 	if(mesh && mesh->GetOwner())
@@ -18,8 +15,6 @@ void UAttackNotifyState::NotifyBegin(USkeletalMeshComponent* const mesh, UAnimSe
             character->attack_start();
         }
     }
-
-
 }
 
 void UAttackNotifyState::NotifyEnd(USkeletalMeshComponent* const mesh, UAnimSequenceBase* const animation) 
@@ -32,8 +27,6 @@ void UAttackNotifyState::NotifyEnd(USkeletalMeshComponent* const mesh, UAnimSequ
             character->attack_end();
         }
     }
-
-
 
 }
 

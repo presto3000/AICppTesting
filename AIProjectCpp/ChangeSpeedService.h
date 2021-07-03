@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/Services/BTService_BlackboardBase.h"
 #include "ChangeSpeedService.generated.h"
-
 /**
  * 
  */

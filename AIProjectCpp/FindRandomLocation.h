@@ -4,13 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
-
-
 #include "GameFramework/Pawn.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree//BehaviorTreeTypes.h"
 #include "UObject/UObjectGlobals.h"
-
 #include "FindRandomLocation.generated.h"
 
 /**

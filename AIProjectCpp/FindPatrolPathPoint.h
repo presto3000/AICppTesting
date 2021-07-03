@@ -6,7 +6,6 @@
 #include "BehaviorTree/Tasks/BTTask_BlackboardBase.h"
 #include "BehaviorTree/BehaviorTreeTypes.h"
 #include "FindPatrolPathPoint.generated.h"
-
 /**
  * 
  */

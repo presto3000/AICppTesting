@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+ // Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "MeleeAttack.h"
@@ -19,24 +19,23 @@ UMeleeAttack::UMeleeAttack(FObjectInitializer const& ObjectInitializer)
 
 EBTNodeResult::Type UMeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	//get the NPC
-	AAIController* const cont = OwnerComp.GetAIOwner();
-
-
-	//if (ICombatInterface* const icombat = Cast<ICombatInterface>(npc))
-	if (ANPC* const npc = Cast<ANPC>(cont->GetPawn()))
+	//get AI controller and the NPC
+	if(AAIController* const cont = OwnerComp.GetAIOwner())
 	{
-		if(montage_has_finished(npc))
-		{
-			//icombat->Execute_melee_attack(npc);
-			npc->melee_attack();
-		}
+		//if (ICombatInterface* const icombat = Cast<ICombatInterface>(npc))
+		if (ANPC* const npc = Cast<ANPC>(cont->GetPawn()))
+			{
+				if(montage_has_finished(npc))
+				{
+					//icombat->Execute_melee_attack(npc);
+					npc->melee_attack();
+				}
+			}
+			
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return  EBTNodeResult::Succeeded;
 	}
-	
-	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	return  EBTNodeResult::Succeeded;
-
-	
+	return  EBTNodeResult::Failed;
 }
 
 
