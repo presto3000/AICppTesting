@@ -106,6 +106,13 @@ void ANPC::BeginPlay()
 		material_instance->SetVectorParameterValue("BodyColor", FLinearColor(1.0f, 0.0f, 0, 1.0f));
 		GetMesh()->SetMaterial(0, material_instance);
 	}
+		// attach delegates
+	if (right_fist_collision_box)
+	{
+		right_fist_collision_box->OnComponentBeginOverlap.AddDynamic(this, &ANPC::on_attack_overlap_begin);
+		right_fist_collision_box->OnComponentEndOverlap.AddDynamic(this, &ANPC::on_attack_overlap_end);
+	}
+
 }
 void ANPC::on_attack_overlap_begin(
 		UPrimitiveComponent* const overlapped_component,
